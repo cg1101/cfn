@@ -1,0 +1,35 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "create a vpc with multiple layers",
+	"Parameters": {
+		"Region": {
+			"Type": "String",
+			"Description": "AWS Region name in which VPC will be created"
+		},
+		"VPCIPRange": {
+			"Type": "String",
+			"Description": "CIDR block to be used for VPC"
+		}
+	},
+	"Resources": {
+	    "VPC": {
+	      "Type": "AWS::EC2::VPC",
+	      "Properties": {
+	      	 "CidrBlock": {"Ref": "VPCIPRange"},
+	      	 "Tags": [
+	      	 	{"Key": "Name", "Value": "AWS::EC2::VPC"}
+	      	 ]
+	      }
+	    }
+	},
+	"Outputs": {
+		"DefaultSecurityGroup": {
+			"Description": "Default security group of created VPC",
+			"Value": {"Fn::GetAtt": ["VPC", "DefaultSecurityGroup"]}
+		},
+		"VpcId": {
+			"Description": "Id of VPC just created",
+			"Value": {"Ref": "VPC"}
+		}
+	}
+}
