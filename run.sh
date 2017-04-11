@@ -24,3 +24,9 @@ aws cloudformation create-stack --stack-name My-Stack-`date +%Y%m%sT%H%M%SZ` \
   --template-body file://./exercise5.json \
   --parameters ParameterKey=EC2KeyName,ParameterValue=tokyo_key_pair_1
 
+aws cloudformation create-stack --stack-name My-Stack-`date +%Y%m%sT%H%M%SZ` \
+  --region ap-northeast-1 \
+  --template-body file://./exercise6.json \
+  --parameters ParameterKey=MasterUsername,ParameterValue=${DB_USER_LOGIN} \
+    ParameterKey=MasterUserPassword,ParameterValue=${DB_USER_PASSWD}
+

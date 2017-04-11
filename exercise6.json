@@ -1,0 +1,44 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "Create database to be used by gnx environments",
+	"Parameters": {
+		"EnvironmentType": {
+			"Type": "String",
+			"Default": "qa",
+			"Description": "environment type for db instance"
+		},
+		"DatabaseName": {
+			"Type": "String",
+			"Default": "gnx",
+			"Description": "database name for gnx"
+		},
+		"MasterUsername": {"Type": "String"},
+		"MasterUserPassword": {"Type": "String"}
+	},
+	"Conditions": {
+		"isProduction": {"Fn::Equals": [{"Ref": "EnvironmentType"}, "prod"]},
+		"isStage": {"Fn::Equals": [{"Ref": "EnvironmentType"}, "stage"]},
+		"isQa": {"Fn::Equals": [{"Ref": "EnvironmentType"}, "qa"]}
+	},
+	"Resources": {
+		"GNXDB": {
+			"Type": "AWS::RDS::DBInstance",
+			"DeletionPolicy": "Retain",
+			"Properties": {
+				"AllocatedStorage": {"Fn::If": ["isProduction", "16", "8"]},
+				"DBInstanceClass": {"Fn::If": ["isProduction", "db.t2.medium", "db.t2.micro"]},
+				"DBInstanceIdentifier": {"Fn::Join": ["-", [{"Ref":"DatabaseName"}, {"Ref":"EnvironmentType"}]]},
+				"DBName": {"Ref": "DatabaseName"},
+				"Engine": "postgres",
+				"MasterUsername": {"Ref": "MasterUsername"},
+				"MasterUserPassword": {"Ref": "MasterUserPassword"},
+				"MultiAZ": {"Fn::If": ["isProduction", true, false]},
+				"Tags": [
+					{"Key": "Name", "Value": {"Fn::Join": ["-", [{"Ref": "DatabaseName"}, {"Ref": "EnvironmentType"}]]}}
+				]
+			}
+		}
+	},
+	"Outputs": {
+	}
+}
