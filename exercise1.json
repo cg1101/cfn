@@ -1,0 +1,13 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "create an ec2 instance in ap-northeast-1",
+	"Resources": {
+	    "myinstance": {
+	      "Type": "AWS::EC2::Instance",
+	      "Properties": {
+	      	 "ImageId": "ami-859bbfe2",
+	      	 "InstanceType": "t2.micro"
+	      }
+	    }
+	}
+}
