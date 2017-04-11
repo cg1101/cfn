@@ -1,0 +1,33 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "create an ec2 instance in ap-northeast-1 with predefined role and output some values",
+	"Resources": {
+	    "myinstance": {
+	      "Type": "AWS::EC2::Instance",
+	      "Properties": {
+	      	 "ImageId": "ami-859bbfe2",
+	      	 "InstanceType": "t2.micro",
+	      	 "IamInstanceProfile": "AppenWebAppRole"
+	      }
+	    }
+	},
+	"Outputs": {
+		"instancedetail": {
+			"Description": "details of my instance",
+			"Value": {"Ref": "myinstance"}
+		},
+		"ec2privateid": {
+			"Description": "ec2 private ip",
+			"Value": {"Fn::GetAtt": ["myinstance", "PrivateIp"]}
+		},
+		"base64test": {
+			"Description": "a test of base64",
+			"Value": {"Fn::Base64": "yum update -y"}
+		},
+		"jointest": {
+			"Description": "a test of join",
+			"Value": {"Fn::Join": ["-", ["a", "123", "xyz"]]}
+		}
+
+	}
+}
