@@ -1,0 +1,67 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Description": "create an ec2 instance in ap-northeast-1 with predefined role and output some values",
+	"Parameters": {
+		"EC2KeyName": {
+			"Type": "String",
+			"Description": "key file to be used for ec2"
+		},
+		"InstanceType":{
+			"Type": "String",
+			"Default": "t2.micro",
+			"Description": "instance type, default t2.micro"
+		}
+	},
+	"Conditions": {
+		"IsNano": {"Fn::Equals": [{"Ref": "InstanceType"}, "t2.nano"]}
+	},
+	"Resources": {
+	    "myinstance": {
+	      "Type": "AWS::EC2::Instance",
+	      "Properties": {
+	      	 "ImageId": "ami-859bbfe2",
+	      	 "InstanceType": {"Ref": "InstanceType"},
+	      	 "IamInstanceProfile": "AppenWebAppRole",
+	      	 "KeyName": {"Ref": "EC2KeyName"},
+	      	 "Tags": [
+	      	 	{
+	      	 		"Key": "Name",
+	      	 		"Value": {
+	      	 			"Fn::If": [
+		      	 			"IsNano",
+		      	 			"My lovely nano instance",
+		      	 			"My bigger instance"
+		      	 		]
+	      	 		}
+	      	 	}
+	      	 ]
+	      }
+	    }
+	},
+	"Outputs": {
+		"instancedetail": {
+			"Description": "details of my instance",
+			"Value": {"Ref": "myinstance"}
+		},
+		"ec2privateid": {
+			"Description": "ec2 private ip",
+			"Value": {"Fn::GetAtt": ["myinstance", "PrivateIp"]}
+		},
+		"base64test": {
+			"Description": "a test of base64",
+			"Value": {"Fn::Base64": "yum update -y"}
+		},
+		"jointest": {
+			"Description": "a test of join",
+			"Value": {"Fn::Join": ["-", ["a", "123", "xyz"]]}
+		},
+		"getaztest": {
+			"Description": "show a comma separated list of azs",
+			"Value": {"Fn::Join": [",", {"Fn::GetAZs": ""}]}
+		},
+		"defaultstartingaz": {
+			"Description": "default starting AZ of the instance",
+			"Value": {"Fn::Select": ["0", {"Fn::GetAZs": ""}]}
+		}
+	}
+}
